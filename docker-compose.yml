@@ -1,0 +1,13 @@
+version: '3'
+services:
+
+  postgres:
+    image: 'postgres:latest'
+
+  keydb:
+    image: 'eqalpha/keydb'
+
+  server:
+    build:
+      dockerfile: Dockerfile.dev
+      context: './server'
