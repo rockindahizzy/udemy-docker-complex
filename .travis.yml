@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t rockindahizzy/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true rockindahizzy/react-test npm test
+
+after_success:
+  - docker build -t rockindahizzy/multi-client ./client
+  - docker build -t rockindahizzy/multi-nginx ./nginx
+  - docker build -t rockindahizzy/multi-server ./server
+  - docker build -t rockindahizzy/multi-worker ./worker
+  #Login to docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #Push images to docker hub
+  - docker push rockindahizzy/multi-client
+  - docker push rockindahizzy/multi-nginx
+  - docker push rockindahizzy/multi-server
+  - docker push rockindahizzy/multi-worker
